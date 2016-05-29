@@ -10,8 +10,6 @@ class ZdmTest extends PHPUnit_Framework_TestCase {
 		}
 		Zdm::start(array(
 			'libraryPath' => $tmpFolder,
-			'zfVersion' => '',
-			'repository' => dirname(__FILE__) . DIRECTORY_SEPARATOR . 'zdmfiles'
 		));
 	}
 
@@ -43,6 +41,7 @@ class ZdmTest extends PHPUnit_Framework_TestCase {
 		$this -> assertTrue(is_dir($path));
 		$this -> assertEquals(count(glob($path . '/*.*')),2);
 	}
+	
 	public function testfetchWithDependencies() {
 		$file = 'Zend/Controller/Action.php';
 		Zdm::getInstance() -> fetch($file);

@@ -2,10 +2,12 @@
 /**
  * Zend Framework dependency manager
  *
- * Manages dependencies of the Zend Framework in application code.
+ * Manages dependencies of the Zend Framework in application code. Fetches 
+ * Zend Framework classes from the Git repo as needed. Allows building of 
+ * ZF dependent code without including the full ZF library.
  *
  * @category   Zdm
- * @copyright  Lionite Ltd.
+ * @copyright  Eran Galperin
  * @author     Eran Galperin
  * @license    http://www.opensource.org/licenses/mit-license.php  MIT license
  */
@@ -14,8 +16,8 @@ class Zdm {
 	protected $_config = array(
 		'libraryPath' => '/library', // If not passed will be set relative to Zdm class
 		'prependStack' => true, // Prepend autoloader to autoload stack (otherwise append)
-		'zfVersion' => '1.10.8', // Zend Framework version
-		'repository' => 'http://framework.zend.com/svn/framework/standard/tags/release-'
+		'zfVersion' => '1.12.18', // Zend Framework version
+		'repository' => 'https://raw.githubusercontent.com/zendframework/zf1/release-'
 	);
 
 	protected $_dependencies = array(
