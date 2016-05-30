@@ -17,7 +17,8 @@ class Zdm {
 		'libraryPath' => '/library', // If not passed will be set relative to Zdm class
 		'prependStack' => true, // Prepend autoloader to autoload stack (otherwise append)
 		'zfVersion' => '1.12.18', // Zend Framework version
-		'repository' => 'https://raw.githubusercontent.com/zendframework/zf1/release-'
+		'repository' => 'https://raw.githubusercontent.com/zendframework/zf1/release-',
+		'method' => self::CURL
 	);
 
 	protected $_dependencies = array(
@@ -26,6 +27,10 @@ class Zdm {
 		'Zend/Controller/Action.php' => 'Zend/Controller/Action/Helper'
 	);
 
+	protected $_errors = array();
+	
+	const CURL = 1;
+	const FILE_GET_CONTENTS = 2;
 	/**
 	 * Initialize and register autoloader instance
 	 * @param array $config
@@ -89,7 +94,8 @@ class Zdm {
 	public function fetch($file) {
 		$local = $this -> _config['libraryPath'] . DIRECTORY_SEPARATOR . $file;
 		$target = $this -> _config['repository'] . $this -> _config['zfVersion'] . '/library/' . $file;
-		$data = file_get_contents($target);
+		$data = $this -> _remoteFetch($target);
+		var_dump($data);
 		if(!is_dir(dirname($local))) {
 			mkdir(dirname($local),0755,true);
 		}
@@ -102,6 +108,28 @@ class Zdm {
 		$this -> fetchDependencies($file);
 	}
 
+	/**
+	 * Select method to fetch remote file by configuration
+	 * @param string $url
+	 * @return string
+	 */
+	protected function _remoteFetch($url) {
+		if($this -> _config['method'] == self::CURL) {
+			$curl = curl_init();
+			$options = array(
+				CURLOPT_URL => $url,
+				CURLOPT_RETURNTRANSFER => true,
+				CURLOPT_HEADER => false,
+				CURLOPT_SSL_VERIFYPEER => false
+			);
+			curl_setopt_array($curl, $options);
+			$contents = curl_exec($curl);
+			curl_close($curl);
+			return $contents; 
+		} else {
+			return file_get_contents($url);
+		}
+	}
 	/**
 	 * Fetch a directory of Zend Framework classes from repository
 	 * @param string $dir
